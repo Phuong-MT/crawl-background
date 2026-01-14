@@ -616,7 +616,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 export async function getBackgroudByKeyWord(keyword) {
-  const MAX_TRY = 5;
+  const MAX_RETRY = 5;
   const MAX_KEY = 3;
 
   let lastPage = Infinity;
@@ -637,15 +637,9 @@ export async function getBackgroudByKeyWord(keyword) {
         limit: SIZE_LIMIT,
       });
 
-      retry = 0; // reset retry nếu request thành công
+      retry = 0; // reset retry nếu thành công
 
-      if (
-        !sourceBackgrouds ||
-        !Array.isArray(sourceBackgrouds.data) ||
-        sourceBackgrouds.data.length === 0
-      ) {
-        break;
-      }
+      if (!sourceBackgrouds?.data?.length) break;
 
       if (sourceBackgrouds.meta?.last_page) {
         lastPage = sourceBackgrouds.meta.last_page;
@@ -666,28 +660,43 @@ export async function getBackgroudByKeyWord(keyword) {
       page++;
 
     } catch (error) {
-      if (retry < MAX_TRY) {
-        const delay = Math.pow(2, retry) * 1000;
-        console.warn(`429 Too Many Requests → retry ${retry + 1}/${MAX_TRY}, sleep ${delay}ms`);
+      const status = error.status;
+
+      // ⛔ keyword không tồn tại
+      if (status === 404) {
+        console.warn(`⚠️ No result for keyword: "${keyword}" → skip`);
+        break;
+      }
+
+      // 💥 server Freepik
+      if (status === 500) {
+        console.warn(`💥 Freepik 500 for "${keyword}" → skip`);
+        break;
+      }
+
+      // ⏳ rate limit
+      if (status === 429 && retry < MAX_RETRY) {
+        const delay = Math.pow(2, retry) * 2000;
         retry++;
+        console.warn(`⏳ 429 → retry ${retry}/${MAX_RETRY}, sleep ${delay}ms`);
         await sleep(delay);
         continue;
       }
-      
-      if(retry === MAX_TRY){
-         keyIndex++;
 
+      // 🔑 key invalid / quota
+      if ((status === 401 || status === 403 || status === 429) && retry >= MAX_RETRY) {
+        keyIndex++;
         if (keyIndex > MAX_KEY) {
-          throw new Error("All Freepik API keys are exhausted");
+          throw new Error("All Freepik API keys exhausted");
         }
 
-        console.warn(`API key invalid/quota exceeded → switch to key #${keyIndex}`);
+        console.warn(`🔑 Switch API key → #${keyIndex}`);
         fetchRequestFreepik = new FetchRequestFreepik(getAPIKey(keyIndex));
         retry = 0;
         continue;
       }
-      console.error("getBackgroudByKeyWord error:", error);
-      break;
+
+      throw error; // lỗi không mong đợi
     }
   }
 
