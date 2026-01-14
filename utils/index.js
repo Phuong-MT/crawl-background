@@ -3,7 +3,7 @@ import { FetchRequestFreepik } from "../services/api.js";
 
 const SIZE_LIMIT = 100;
 const FREEPIK_API_KEY_1 = "FPSX50582b10f0b2353db67d5572b29e5a69";
-
+const FREEPIK_API_KEY_2 ="FPSX3937ab15386e4fb4d57515ef0536bb77"
 export const keywordsByTopic = {
     // "Back to School": [
     //     "back to school",
@@ -594,6 +594,8 @@ export function getAPIKey(i){
     switch(i){
         case 1:
             return FREEPIK_API_KEY_1;
+        case 2: 
+            return FREEPIK_API_KEY_2;
         default:
             return "FPSX6c7ba1ba766397fb0915628e4caf4179";
     }
