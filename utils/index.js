@@ -241,7 +241,7 @@ export const keywordsByTopic = {
         "wheat bundle",
         "roasted vegetables",
     ],
-    "Winter Concert/Play": [
+    "Winter Concert Play": [
         "winter concert",
         "winter play",
         "stage",
@@ -614,7 +614,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 export async function getBackgroudByKeyWord(keyword) {
-  const MAX_TRY = 10;
+  const MAX_TRY = 5;
   const MAX_KEY = 2;
 
   let lastPage = Infinity;
@@ -630,7 +630,7 @@ export async function getBackgroudByKeyWord(keyword) {
     try {
       const sourceBackgrouds = await fetchRequestFreepik.get({
         order: "relevance",
-        term: keyword,
+        term: normalizeKey(keyword),
         page,
         limit: SIZE_LIMIT,
       });
@@ -664,11 +664,8 @@ export async function getBackgroudByKeyWord(keyword) {
       page++;
 
     } catch (error) {
-      const status = error?.status;
-
-      // 🔁 429 → retry với exponential backoff
-      if (status === 429 && retry < MAX_TRY) {
-        const delay = Math.pow(2, retry) * 2000;
+      if (retry < MAX_TRY) {
+        const delay = Math.pow(2, retry) * 1000;
         console.warn(`429 Too Many Requests → retry ${retry + 1}/${MAX_TRY}, sleep ${delay}ms`);
         retry++;
         await sleep(delay);
@@ -687,29 +684,8 @@ export async function getBackgroudByKeyWord(keyword) {
         retry = 0;
         continue;
       }
-
-      // 🔑 lỗi key / hết quota → đổi key
-      if ([401, 403].includes(status)) {
-        keyIndex++;
-
-        if (keyIndex > MAX_KEY) {
-          throw new Error("All Freepik API keys are exhausted");
-        }
-
-        console.warn(`API key invalid/quota exceeded → switch to key #${keyIndex}`);
-        fetchRequestFreepik = new FetchRequestFreepik(getAPIKey(keyIndex));
-        retry = 0;
-        continue;
-      }
-
-      if (status === 404) {
-        console.warn(`⚠️ No result for keyword: "${keyword}" → skip`);
-        break; // dừng page loop cho keyword này
-      }
-
-      // ❌ lỗi khác → throw ra ngoài
       console.error("getBackgroudByKeyWord error:", error);
-      throw error;
+      break;
     }
   }
 
