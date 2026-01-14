@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path"
-import { getBackgroudByKeyWord, keywordsByTopic } from "../utils/index.js";
+import { getBackgroudByKeyWord, keywordsByTopic, normalizeKey } from "../utils/index.js";
 
 const ROOT_PATH = process.cwd();
 const OUTPUT_DIR = path.join(ROOT_PATH, "data", "json")
@@ -15,7 +15,7 @@ async function main() {
 
     const filePath = path.join(
       OUTPUT_DIR,
-      `freepik-${topic.replace(/\s+/g, "_").toLowerCase()}.json`
+      `freepik-${normalizeKey(topic)}.json`
     );
 
     await fs.writeFile(

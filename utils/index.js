@@ -632,6 +632,17 @@ export function getAPIKey(i){
     }
 }
 
+export function normalizeKey(key) {
+  return key
+    .toLowerCase()
+    .replace(/[’']/g, "")        // bỏ dấu '
+    .replace(/[()/]/g, "")       // bỏ (, ), /
+    .replace(/\s+/g, "_")        // space -> _
+    .replace(/[^a-z0-9_-]/g, "") // bỏ ký tự lạ
+    .replace(/_+/g, "_")         // gộp __
+    .replace(/^_|_$/g, "");      // bỏ _ đầu/cuối
+}
+
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
