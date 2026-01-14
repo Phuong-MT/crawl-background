@@ -614,8 +614,8 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 export async function getBackgroudByKeyWord(keyword) {
-  const MAX_TRY = 5;
-  const MAX_KEY = 12;
+  const MAX_TRY = 10;
+  const MAX_KEY = 2;
 
   let lastPage = Infinity;
   let page = 1;
@@ -668,7 +668,7 @@ export async function getBackgroudByKeyWord(keyword) {
 
       // 🔁 429 → retry với exponential backoff
       if (status === 429 && retry < MAX_TRY) {
-        const delay = Math.pow(2, retry) * 1000;
+        const delay = Math.pow(2, retry) * 2000;
         console.warn(`429 Too Many Requests → retry ${retry + 1}/${MAX_TRY}, sleep ${delay}ms`);
         retry++;
         await sleep(delay);
