@@ -664,7 +664,7 @@ export async function getBackgroudByKeyWord(keyword) {
       page++;
 
     } catch (error) {
-      const status = error?.response?.status;
+      const status = error?.status;
 
       // 🔁 429 → retry với exponential backoff
       if (status === 429 && retry < MAX_TRY) {
