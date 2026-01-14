@@ -1,0 +1,13 @@
+{
+  "name": "crawbackgroud",
+  "version": "1.0.0",
+  "description": "craw backgroud worksheet zone",
+  "license": "ISC",
+  "author": "phuongmt",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "get-backgroud-by-key":"node ./src/get-backgroud-by-keyword.js"
+  }
+}
