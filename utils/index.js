@@ -2,18 +2,7 @@ import fs from "fs/promises";
 import { FetchRequestFreepik } from "../services/api.js";
 
 const SIZE_LIMIT = 100;
-const FREEPIK_API_KEY_1 = "FPSX09c6f4006c6ce2907dcaeca4b0e122f4";
-const FREEPIK_API_KEY_2 = "FPSX76cc5276bc388fd5fa320d1edd633983";
-const FREEPIK_API_KEY_3 = "FPSX57b50fc269e2955d01925c4047612259";
-const FREEPIK_API_KEY_4 = "FPSX1212ab75e191db6d4582f92a08c12943";
-const FREEPIK_API_KEY_5 = "FPSX9ad56b84a352b013103c718035c5bd65";
-const FREEPIK_API_KEY_6 = "FPSXa653cde4dc28489238a46e9039b48146";
-const FREEPIK_API_KEY_7 = "FPSXd1e6d208a424c83d787460fd607917b1";
-const FREEPIK_API_KEY_8 = "FPSX5f2e174cfc9e70b657b7a85253ccce16";
-const FREEPIK_API_KEY_9 = "FPSX59cf210536d3c5cffb41d33cf4f5314b";
-const FREEPIK_API_KEY_10 = "FPSXf2571233371f5b555d35a937a800c691";
-const FREEPIK_API_KEY_11 = "FPSXef66977ebbfdf1e31a56547b1bb4ce09";
-const FREEPIK_API_KEY_12 = "FPSX50582b10f0b2353db67d5572b29e5a69";
+const FREEPIK_API_KEY_1 = "FPSX50582b10f0b2353db67d5572b29e5a69";
 
 export const keywordsByTopic = {
     "Back to School": [
@@ -605,28 +594,6 @@ export function getAPIKey(i){
     switch(i){
         case 1:
             return FREEPIK_API_KEY_1;
-        case 2:
-            return FREEPIK_API_KEY_2;
-        case 3:
-            return FREEPIK_API_KEY_3;
-        case 4:
-            return FREEPIK_API_KEY_4;
-        case 5:
-            return FREEPIK_API_KEY_5;
-        case 6:
-            return FREEPIK_API_KEY_6;
-        case 7:
-            return FREEPIK_API_KEY_7;
-        case 8:
-            return FREEPIK_API_KEY_8;
-        case 9:
-            return FREEPIK_API_KEY_9;
-        case 10:
-            return FREEPIK_API_KEY_10;
-        case 11:
-            return FREEPIK_API_KEY_11;
-        case 12:
-            return FREEPIK_API_KEY_12;
         default:
             return "FPSX6c7ba1ba766397fb0915628e4caf4179";
     }
