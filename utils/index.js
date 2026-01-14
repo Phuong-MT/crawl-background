@@ -674,6 +674,19 @@ export async function getBackgroudByKeyWord(keyword) {
         await sleep(delay);
         continue;
       }
+      
+      if(retry === MAX_TRY){
+         keyIndex++;
+
+        if (keyIndex > MAX_KEY) {
+          throw new Error("All Freepik API keys are exhausted");
+        }
+
+        console.warn(`API key invalid/quota exceeded → switch to key #${keyIndex}`);
+        fetchRequestFreepik = new FetchRequestFreepik(getAPIKey(keyIndex));
+        retry = 0;
+        continue;
+      }
 
       // 🔑 lỗi key / hết quota → đổi key
       if ([401, 403].includes(status)) {
