@@ -8,26 +8,21 @@ export class FetchRequestFreepik {
   }
 
   async get(params = {}) {
-    try {
-      const searchParams = new URLSearchParams(params);
+    const searchParams = new URLSearchParams(params);
 
-      const res = await fetch(`${url}?${searchParams.toString()}`, {
-        headers: {
-          "Accept": "application/json",
-          "X-Freepik-API-Key": this.apiKey
-        }
-      });
+    const res = await fetch(`${url}?${searchParams.toString()}`, {
+      headers: {
+        Accept: "application/json",
+        "X-Freepik-API-Key": this.apiKey,
+      },
+    });
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-      return data;
-
-    } catch (err) {
-      console.error("fetch request freepik error:", err);
-      return null;
+    if (!res.ok) {
+      const error = new Error(`HTTP ${res.status}`);
+      error.status = res.status;
+      throw error;
     }
+
+    return res.json();
   }
 }
