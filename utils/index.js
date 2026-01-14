@@ -619,7 +619,7 @@ export async function getBackgroudByKeyWord(keyword) {
 
   let lastPage = Infinity;
   let page = 1;
-  let keyIndex = 1;
+  let keyIndex = 2;
   let retry = 0;
 
   const result = [];
@@ -700,6 +700,11 @@ export async function getBackgroudByKeyWord(keyword) {
         fetchRequestFreepik = new FetchRequestFreepik(getAPIKey(keyIndex));
         retry = 0;
         continue;
+      }
+
+      if (status === 404) {
+        console.warn(`⚠️ No result for keyword: "${keyword}" → skip`);
+        break; // dừng page loop cho keyword này
       }
 
       // ❌ lỗi khác → throw ra ngoài
