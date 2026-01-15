@@ -3,7 +3,11 @@ import { FetchRequestFreepik } from "../services/api.js";
 
 const SIZE_LIMIT = 100;
 const FREEPIK_API_KEY_1 = "FPSX50582b10f0b2353db67d5572b29e5a69";
-const FREEPIK_API_KEY_2 = "FPSX3937ab15386e4fb4d57515ef0536bb77"
+const FREEPIK_API_KEY_2 = "FPSX3937ab15386e4fb4d57515ef0536bb77";
+const FREEPIK_API_KEY_3 = "FPSX8a9aeb9ee5926d173cb114ae216bbd51";
+const FREEPIK_API_KEY_4 = "FPSXc906a439e3c83847f18adf8f9828dc28";
+const FREEPIK_API_KEY_5 = "FPSXd14d1b433153286ce85451857499540f";
+
 export const keywordsByTopic = {
     // "Back to School": [
     //     "back to school",
@@ -271,38 +275,38 @@ export const keywordsByTopic = {
     //     "snowflake decor",
     //     "musical notes",
     // ],
-    "Winter Break (Christmas & New Year)": [
-        "christmas",
-        "Christmas tree",
-        "ornaments",
-        "Santa Claus",
-        "reindeer",
-        "snowman",
-        "gift wrapping",
-        "gingerbread",
-        "fireplace",
-        "snowflakes",
-        "holiday lights",
-        "sleigh",
-        "elves",
-        "New Year countdown",
-        "fireworks",
-        "celebration",
-        "family gathering",
-        "hot chocolate",
-        "stockings",
-        "candy canes",
-        "holly",
-        "jingle bells",
-        "snowy village",
-        "Christmas cookies",
-        "winter scarf",
-        "cozy sweater",
-        "chimney",
-        "gift bags",
-        "party hats",
-        "champagne glasses",
-    ],
+    // "Winter Break (Christmas & New Year)": [
+    //     "christmas",
+    //     "Christmas tree",
+    //     "ornaments",
+    //     "Santa Claus",
+    //     "reindeer",
+    //     "snowman",
+    //     "gift wrapping",
+    //     "gingerbread",
+    //     "fireplace",
+    //     "snowflakes",
+    //     "holiday lights",
+    //     "sleigh",
+    //     "elves",
+    //     "New Year countdown",
+    //     "fireworks",
+    //     "celebration",
+    //     "family gathering",
+    //     "hot chocolate",
+    //     "stockings",
+    //     "candy canes",
+    //     "holly",
+    //     "jingle bells",
+    //     "snowy village",
+    //     "Christmas cookies",
+    //     "winter scarf",
+    //     "cozy sweater",
+    //     "chimney",
+    //     "gift bags",
+    //     "party hats",
+    //     "champagne glasses",
+    // ],
     "New Year’s Day": [
         "new year",
         "fireworks",
@@ -596,6 +600,12 @@ export function getAPIKey(i){
             return FREEPIK_API_KEY_1;
         case 2: 
             return FREEPIK_API_KEY_2;
+        case 3: 
+            return FREEPIK_API_KEY_3;
+        case 4: 
+            return FREEPIK_API_KEY_4;
+        case 5: 
+            return FREEPIK_API_KEY_5;
         default:
             return "FPSX6c7ba1ba766397fb0915628e4caf4179";
     }
@@ -617,11 +627,11 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function getBackgroudByKeyWord(keyword) {
   const MAX_RETRY = 5;
-  const MAX_KEY = 3;
+  const MAX_KEY = 6;
 
   let lastPage = Infinity;
   let page = 1;
-  let keyIndex = 2;
+  let keyIndex = 3;
   let retry = 0;
 
   const result = [];
