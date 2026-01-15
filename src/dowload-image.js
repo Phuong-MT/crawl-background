@@ -3,7 +3,7 @@ import path from "path";
 import { downloadFile } from "../utils/index.js";
 
 const ROOT_PATH = process.cwd();
-const JSON_DIR = path.join(ROOT_PATH, "data", "json");
+const JSON_DIR = path.join(ROOT_PATH, "data", "json_new");
 const STATIC_DIR = path.join(ROOT_PATH, "data", "static");
 
 async function downloadAllImages() {
