@@ -724,3 +724,7 @@ export async function downloadFile(url, outputPath) {
     console.error(`❌ Download fail: ${url}`, err.message);
   }
 }
+
+export async function selectImageDetected(input_file,ouput_file){
+  
+}
