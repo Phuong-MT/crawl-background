@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "get-backgroud-by-key":"node ./src/get-backgroud-by-keyword.js",
+    "get-backgroud-by-key": "node ./src/get-backgroud-by-keyword.js",
     "dowload-image": "node ./src/dowload-image.js"
   }
 }
