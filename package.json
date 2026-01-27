@@ -4,11 +4,22 @@
   "description": "craw backgroud worksheet zone",
   "license": "ISC",
   "author": "phuongmt",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "get-backgroud-by-key": "node ./src/get-backgroud-by-keyword.js",
     "dowload-image": "node ./src/dowload-image.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6"
   }
 }
