@@ -4,7 +4,7 @@
   "description": "craw backgroud worksheet zone",
   "license": "ISC",
   "author": "phuongmt",
-  "type": "module",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
