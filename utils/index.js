@@ -810,7 +810,7 @@ export function hashContext(context) { return crypto.createHash("sha256").update
 export async function findDuplicateImagesV2(OUTPUT_FILE, FOLDER_IMAGE) {
     const hashMap = new Map(); 
 
-    for (const folderPath of [FOLDER_IMAGE[1]]) {
+    for (const folderPath of FOLDER_IMAGE) {
         let files;
         try {
             files = await fs.readdir(folderPath);
