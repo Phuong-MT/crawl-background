@@ -4,7 +4,7 @@
   "description": "craw backgroud worksheet zone",
   "license": "ISC",
   "author": "phuongmt",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,8 +12,12 @@
     "dowload-image": "node ./src/dowload-image.js"
   },
   "dependencies": {
+    "@neplex/vectorizer": "^0.0.5",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "express": "^5.2.1",
+    "imghash": "^1.1.2",
+    "sharp": "^0.34.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.54.0"

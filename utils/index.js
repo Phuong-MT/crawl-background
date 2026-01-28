@@ -1,6 +1,15 @@
 import fs from "fs/promises";
+import path from "path"
+import {
+  vectorize,
+  ColorMode,
+  Hierarchical,
+  PathSimplifyMode,
+} from "@neplex/vectorizer";
+import crypto from "crypto"
 import { FetchRequestFreepik } from "../services/api.js";
 
+const TARGET_SIZE = 128;
 const SIZE_LIMIT = 100;
 const FREEPIK_API_KEY_1 = "FPSX50582b10f0b2353db67d5572b29e5a69";
 const FREEPIK_API_KEY_2 = "FPSX3937ab15386e4fb4d57515ef0536bb77";
@@ -725,6 +734,138 @@ export async function downloadFile(url, outputPath) {
   }
 }
 
-export async function selectImageDetected(input_file,ouput_file){
-  
+function resizeSVG(svgString, targetSize = TARGET_SIZE) {
+  const match = svgString.match(/<svg[^>]*>/);
+  if (!match) return svgString;
+
+  let svgTag = match[0];
+  let viewBox = svgTag.match(/viewBox=["']([^"']+)["']/)?.[1];
+
+  if (!viewBox) {
+    const w = svgTag.match(/width=["']([^"']+)["']/)?.[1];
+    const h = svgTag.match(/height=["']([^"']+)["']/)?.[1];
+    if (w && h) viewBox = `0 0 ${parseFloat(w)} ${parseFloat(h)}`;
+    else viewBox = `0 0 ${targetSize} ${targetSize}`;
+  }
+
+  svgTag = svgTag
+    .replace(/\s+(width|height|viewBox)=["'][^"']*["']/gi, "")
+    .replace(
+      "<svg",
+      `<svg width="${targetSize}" height="${targetSize}" viewBox="${viewBox}"`
+    );
+
+  return svgString.replace(/<svg[^>]*>/, svgTag);
+}
+
+export const convertPngToSvgContext = async (
+  imagePath
+) => {
+    const inputBuffer = await fs.readFile(imagePath);
+    try {
+      const jsConfig = {
+        colorMode:  ColorMode.Color,
+        hierarchical: Hierarchical.Stacked,
+        mode: PathSimplifyMode.Spline,
+
+        colorPrecision: 16,
+        maxIterations: 25,
+        pathPrecision: 20,
+        cornerThreshold: 2,
+        layerDifference: 2,
+
+        lengthThreshold: 1,
+        filterSpeckle: 1,
+        spliceThreshold: 1,
+      };
+
+      const result = await vectorize(inputBuffer, jsConfig);
+
+      // ⚠️ QUAN TRỌNG: normalize output
+      const svgRaw =
+        typeof result === "string"
+          ? result
+          : Buffer.from(result).toString("utf8");
+
+      // reject svg rỗng / lỗi
+      if (!svgRaw || !svgRaw.includes("<svg")) {
+        throw new Error("Invalid SVG output");
+      }
+
+      const svg_resize = resizeSVG(svgRaw);
+      console.log("🚀 Done: PNG → SVG context: ", imagePath);
+
+      return svg_resize
+    } catch (err) {
+      console.error(
+        `❌ SVG FAIL | image=${imagePath}`,
+        err.message || err
+      );
+    }
+
+}
+
+export function hashContext(context) { return crypto.createHash("sha256").update(context).digest("hex"); }
+
+export async function findDuplicateImagesV2(OUTPUT_FILE, FOLDER_IMAGE) {
+    const hashMap = new Map(); 
+
+    for (const folderPath of [FOLDER_IMAGE[1]]) {
+        let files;
+        try {
+            files = await fs.readdir(folderPath);
+        } catch {
+            console.warn(`⚠️ Skip missing folder: ${folderPath}`);
+            continue;
+        }
+
+        for (const file of files) {
+            const filePath = path.join(folderPath, file);
+
+            let stat;
+            try {
+                stat = await fs.stat(filePath);
+            } catch {
+                console.log(filePath);
+                continue;
+            }
+
+            if (!stat.isFile()) continue;
+
+            const svgContext = await convertPngToSvgContext(filePath);
+            if(!svgContext)continue;
+            const hash = hashContext(svgContext);
+
+            if (!hashMap.has(hash)) {
+                hashMap.set(hash, {
+                    original: file,
+                    duplicates: [],
+                });
+            } else {
+                hashMap.get(hash).duplicates.push(file);
+            }
+        }
+    }
+
+    // ✅ chỉ lấy hash có duplicate
+    const report = [];
+
+    for (const [hash, data] of hashMap.entries()) {
+        if (data.duplicates.length > 0) {
+            report.push({
+                hash,
+                original: data.original,
+                duplicates: data.duplicates,
+            });
+        }
+    }
+
+    await fs.writeFile(
+        OUTPUT_FILE,
+        JSON.stringify(report, null, 2),
+        "utf-8"
+    );
+
+    console.log(`✅ Found ${report.length} duplicate groups`);
+    console.log("📄 Duplicate report saved:", OUTPUT_FILE);
 }
